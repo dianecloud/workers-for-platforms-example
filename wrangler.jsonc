@@ -18,7 +18,7 @@
   ],
   "vars": {
     "DISPATCH_NAMESPACE_NAME": "workers-for-platforms-example-project",
-    "DISPATCH_NAMESPACE_ACCOUNT_ID": ""
+    "CLOUDFLARE_ACCOUNT_ID": ""
     // See .env.test for local development environment variables
     // Copy .env.test to .env and update with your actual values
   }

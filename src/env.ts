@@ -10,7 +10,7 @@ export type Env = {
   dispatcher: Dispatcher;
   DB: object;
   DISPATCH_NAMESPACE_NAME: string;
-  DISPATCH_NAMESPACE_ACCOUNT_ID: string;
+  CLOUDFLARE_ACCOUNT_ID: string;
   CLOUDFLARE_API_TOKEN: string;
 }
 

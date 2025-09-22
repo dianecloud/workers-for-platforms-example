@@ -73,7 +73,7 @@ Your Cloudflare account needs access to Workers for Platforms and D1.
    For local development, you also have to create a `.dev.vars` file with the same environment variables:
 
    ```sh
-   DISPATCH_NAMESPACE_ACCOUNT_ID = "replace_me"
+   CLOUDFLARE_ACCOUNT_ID = "replace_me"
    CLOUDFLARE_API_TOKEN = "replace_me"
    ```
 

@@ -4,7 +4,7 @@
 import { Env } from './env';
 import { ApiScript, ApiScriptWithTags } from './types';
 
-const BaseURI = (env: Env) => `https://api.cloudflare.com/client/v4/accounts/${env.DISPATCH_NAMESPACE_ACCOUNT_ID}/workers`;
+const BaseURI = (env: Env) => `https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/workers`;
 const ScriptsURI = (env: Env) => `${BaseURI(env)}/dispatch/namespaces/${env.DISPATCH_NAMESPACE_NAME}/scripts`;
 const MakeHeaders = (env: Env) => ({
   'Authorization': `Bearer ${env.CLOUDFLARE_API_TOKEN}`,
