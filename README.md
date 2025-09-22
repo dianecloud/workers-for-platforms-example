@@ -11,7 +11,7 @@ By creating a dispatch namespace and using the `dispatch_namespaces` binding in 
 ```javascript
 export default {
   async fetch(request, env) {
-    // "dispatcher" is a binding defined in wrangler.toml
+    // "dispatcher" is a binding defined in wrangler.jsonc
     // "customer-worker-1" is a script previously uploaded to the dispatch namespace
     const worker = env.dispatcher.get("customer-worker-1");
     return await worker.fetch(request);
@@ -63,13 +63,13 @@ Your Cloudflare account needs access to Workers for Platforms and D1.
    npm install
    ```
 
-2. Create a D1 database and copy the ID into `wrangler.toml`. Make sure you update the `database_id` in wrangler.toml for your D1 binding afterwards:
+2. Create a D1 database and copy the ID into `wrangler.jsonc`. Make sure you update the `database_id` in wrangler.jsonc for your D1 binding afterwards:
 
    ```
    npx wrangler d1 create workers-for-platforms-example-project
    ```
 
-3. Edit the `[vars]` in `wrangler.toml` and set the `DISPATCH_NAMESPACE_API_TOKEN` secret (instructions in `wrangler.toml`).
+3. Edit the `vars` in `wrangler.jsonc` and set the `DISPATCH_NAMESPACE_API_TOKEN` secret (instructions in `wrangler.jsonc`).
    For local development, you also have to create a `.dev.vars` file with the same environment variables:
 
    ```sh
