@@ -16,6 +16,7 @@
     "wrangler": "^4.38.0"
   },
   "scripts": {
+    "dev": "wrangler dev",
     "start": "wrangler dev",
     "deploy": "wrangler deploy",
     "lint": "npx eslint ./src",

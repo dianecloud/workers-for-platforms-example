@@ -1,7 +1,7 @@
 {
 	"name": "workers-for-platforms-example-project",
 	"main": "src/index.ts",
-	"compatibility_date": "2024-04-03",
+	"compatibility_date": "2025-09-22",
 	"dispatch_namespaces": [
 		{
 			"binding": "dispatcher",
