@@ -19,8 +19,7 @@
   "vars": {
     "DISPATCH_NAMESPACE_NAME": "workers-for-platforms-example-project",
     "DISPATCH_NAMESPACE_ACCOUNT_ID": ""
-    // The necessary secrets are:
-    // - DISPATCH_NAMESPACE_API_TOKEN
-    // Run `echo <VALUE> | wrangler secret put <NAME>` for each of these
+    // See .env.test for local development environment variables
+    // Copy .env.test to .env and update with your actual values
   }
 }

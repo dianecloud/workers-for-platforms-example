@@ -69,12 +69,12 @@ Your Cloudflare account needs access to Workers for Platforms and D1.
    npx wrangler d1 create workers-for-platforms-example-project
    ```
 
-3. Edit the `vars` in `wrangler.jsonc` and set the `DISPATCH_NAMESPACE_API_TOKEN` secret (instructions in `wrangler.jsonc`).
+3. Edit the `vars` in `wrangler.jsonc` and set the `CLOUDFLARE_API_TOKEN` secret (instructions in `wrangler.jsonc`).
    For local development, you also have to create a `.dev.vars` file with the same environment variables:
 
    ```sh
    DISPATCH_NAMESPACE_ACCOUNT_ID = "replace_me"
-   DISPATCH_NAMESPACE_API_TOKEN = "replace_me"
+   CLOUDFLARE_API_TOKEN = "replace_me"
    ```
 
    > To create an API Token, go to Workers dashboard -> click "API Tokens" on right sidebar. Then either:

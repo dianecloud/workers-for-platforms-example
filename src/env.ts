@@ -11,7 +11,7 @@ export type Env = {
   DB: object;
   DISPATCH_NAMESPACE_NAME: string;
   DISPATCH_NAMESPACE_ACCOUNT_ID: string;
-  DISPATCH_NAMESPACE_API_TOKEN: string;
+  CLOUDFLARE_API_TOKEN: string;
 }
 
 interface Dispatcher {
