@@ -63,38 +63,55 @@ Your Cloudflare account needs access to Workers for Platforms and D1.
    npm install
    ```
 
-2. Create a D1 database and copy the ID into `wrangler.jsonc`. Make sure you update the `database_id` in wrangler.jsonc for your D1 binding afterwards:
+2. Create an API token with Workers Scripts (Edit) permission:
+
+   Visit [https://dash.cloudflare.com/?to=/:account/api-tokens](https://dash.cloudflare.com/?to=/:account/api-tokens) and create a new token with the "Workers Scripts (Edit)" permission.
+
+3. Copy the `.env.test` file to `.env` and set the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets:
+
+   ```sh
+   cp .env.test .env
+   ```
+
+   Then edit the `.env` file with your actual values:
+
+   ```sh
+   CLOUDFLARE_ACCOUNT_ID = "your_actual_account_id"
+   CLOUDFLARE_API_TOKEN = "your_actual_api_token"
+   ```
+
+   The `.env` file is already in `.gitignore` and will not be committed to git.
+
+  Then run the following commands to add these secrets to your Worker in production:
+
+  ```
+  npx wrangler@latest secret put CLOUDFLARE_API_TOKEN
+  ```
+
+  ```
+  npx wrangler@latest secret put CLOUDFLARE_ACCOUNT_ID
+  ```
+
+4. Create a D1 database and copy the ID into `wrangler.jsonc`. Make sure you update the `database_id` in wrangler.jsonc for your D1 binding afterwards:
 
    ```
    npx wrangler d1 create workers-for-platforms-example-project
    ```
 
-3. Edit the `vars` in `wrangler.jsonc` and set the `CLOUDFLARE_API_TOKEN` secret (instructions in `wrangler.jsonc`).
-   For local development, you also have to create a `.dev.vars` file with the same environment variables:
-
-   ```sh
-   CLOUDFLARE_ACCOUNT_ID = "replace_me"
-   CLOUDFLARE_API_TOKEN = "replace_me"
-   ```
-
-   > To create an API Token, go to Workers dashboard -> click "API Tokens" on right sidebar. Then either:
-   > 1. Click "API Tokens" on the right sidebar.
-   > 2. Click "Create Token". Make sure you give this token at least "Account : Workers Scripts : Edit". This token is used with `Bearer`.
-
-4. Create a namespace. Replace `$(ACCOUNT)`, `$(API_TOKEN)`, and `$(NAMESPACE)`:
+5. Create a namespace. Replace `$(ACCOUNT)`, `$(API_TOKEN)`, and `$(NAMESPACE)`:
    ```
    npx wrangler dispatch-namespace create workers-for-platforms-example-project
    ```
 
-5. Run the Worker in dev mode:
+6. Run the Worker in dev mode:
    ```
-   npx wrangler dev --remote # local dev not currently supported
+   npm run dev
    ```
    Or deploy to production:
    ```
-   npx wrangler deploy
+   npm run deploy
    ```
-   > Dev mode will still use the configured dispatch namespace. Take care you're not accidentally modifying production!
+   > Dev mode uses remote bindings to connect to your deployed D1 database and dispatch namespace. Take care you're not accidentally modifying production data!
 
 Once the Worker is live, visit [localhost:8787](http://localhost:8787/) in a browser and click the `Initialize` link. Have fun!
 

@@ -5,19 +5,16 @@
 	"dispatch_namespaces": [
 		{
 			"binding": "dispatcher",
-			"namespace": "workers-for-platforms-example-project" // make sure this is the same value as DISPATCH_NAMESPACE_NAME
+			"namespace": "workers-for-platforms-example-project", // make sure this is the same value as DISPATCH_NAMESPACE_NAME
+			"remote": true
 		}
 	],
 	"d1_databases": [
 		{
 			"binding": "workers_for_platforms_example_project",
 			"database_name": "workers-for-platforms-example-project",
-			"database_id": ""
-		},
-		{
-			"binding": "workers_for_platforms_example_project",
-			"database_name": "workers-for-platforms-example-project",
-			"database_id": "c24ad881-6061-4a1b-b83f-d2199ea92a02"
+			"database_id": "c24ad881-6061-4a1b-b83f-d2199ea92a02",
+			"remote": true
 		}
 	],
 	"vars": {
