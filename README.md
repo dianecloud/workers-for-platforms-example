@@ -4,58 +4,44 @@
 - [Docs](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms)
 - [Discord](https://discord.cloudflare.com/)
 
-For SaaS companies, it's challenging to keep up with the never ending requests for customizations. You want your development team to focus on building the core business instead of building and maintaining custom features for every customer use case. Workers for Platforms gives your customers the ability to build services and customizations (powered by Workers) while you retain full control over how their code is executed and billed. The **dynamic dispatch namespaces** feature makes this possible.
+This is a **minimal Workers for Platforms** example that demonstrates the core concepts of dynamic dispatch. The platform allows users to create and upload custom Workers through a simple web interface, then access them via friendly URLs.
 
-By creating a dispatch namespace and using the `dispatch_namespaces` binding in a regular fetch handler, you have a “dispatch Worker”:
+Workers for Platforms gives your customers the ability to build services and customizations (powered by Workers) while you retain full control over how their code is executed and billed. The **dynamic dispatch namespaces** feature makes this possible.
+
+By creating a dispatch namespace and using the `dispatch_namespaces` binding in a regular fetch handler, you have a "dispatch Worker":
 
 ```javascript
 export default {
   async fetch(request, env) {
     // "dispatcher" is a binding defined in wrangler.jsonc
-    // "customer-worker-1" is a script previously uploaded to the dispatch namespace
-    const worker = env.dispatcher.get("customer-worker-1");
+    // "my-user-worker" is a script previously uploaded to the dispatch namespace
+    const worker = env.dispatcher.get("my-user-worker");
     return await worker.fetch(request);
   }
 }
 ```
 
-This is the perfect way for a platform to create boilerplate functions, handle routing to “user Workers”, and sanitize responses. You can manage thousands of Workers with a single Cloudflare Workers account!
+This is the perfect way for a platform to create boilerplate functions, handle routing to "user Workers", and sanitize responses. You can manage thousands of Workers with a single Cloudflare Workers account!
 
 ## In this example
 
-A customer of the platform can upload Workers scripts with a form, and the platform will upload it to a dispatch namespace. An eyeball can request a script by url, and the platform will dynamically fetch and run the script and return the response to the eyeball. For simplicity, this project is a single Worker that does everything: serve HTML, dispatch Workers, etc. In a real application, it would be ideal to split this Worker into several.
+Users can upload Workers scripts through a simple web form. The platform uploads the script to a dispatch namespace and stores a name → Worker ID mapping in Workers KV. Users can then access their Workers via URLs like `/user-workers/my-worker`.
 
-Scripts uploaded to the dispatch namespace are tagged using Script Tags. The dispatch namespace API supports filtering scripts by Script Tag which enables useful CRUD workflows. This platform adds `customer_id` as a script tag, making it possible to do script access control and query customers' scripts.
+This minimal example focuses on the core Workers for Platforms concepts:
+- Dynamic dispatch using the `dispatcher` binding
+- Worker upload via the Cloudflare API
+- Simple name-based routing using KV storage
 
-Customers of the platform are stored in [Workers D1](https://blog.cloudflare.com/introducing-d1/) (sqlite database) with tokens to authenticate specific API interactions. This is not a specific Workers for Platforms feature, but it shows how easy it is to build out functionality for platform management. Beyond authentication, notice how extra data does not need to be stored or managed for the Workers for Platforms workflow!
+## Key Features
 
-Customer scripts can also be configured with [custom limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/custom-limits/#custom-limits) and an [Outbound Worker](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/outbound-workers/#outbound-workers) to control execution. These details are also stored in D1.
-
-Lastly, the default template for a customer worker looks like this:
-```javascript
-import { platformThing } from "./platform_module.mjs";
-export default {
-  async fetch(request, env, ctx) {
-    return new Response("Hello! " + platformThing);
-  }
-};
-```
-
-Notice how this script imports a module it doesn't define. The platform defines it! If you check `src/resource.ts`, you can see that we inject a module to the bundle when a customer uploads their script:
-```javascript
-const platformModuleContent = 'const platformThing = "This module is provided by the platform"; export { platformThing };';
-formData.append('platform_module', new File([platformModuleContent], 'platform_module.mjs', { type: 'application/javascript+module' }));
-```
-Since the platform has total control over how scripts are uploaded, it can provide or limit any functionality it needs. 
-
-This project depends on:
-
-- [G4brym/workers-qb](https://github.com/G4brym/workers-qb) for interacting with D1.
-- [honojs/hono](https://github.com/honojs/hono) for request routing.
+- **Simple Worker Creation**: Web form for uploading Worker code
+- **Dynamic Dispatch**: Route requests to user Workers by name
+- **KV Storage**: Store friendly name mappings
+- **No Dependencies**: Pure Workers runtime with minimal external dependencies
 
 ## Getting started
 
-Your Cloudflare account needs access to Workers for Platforms and D1.
+Your Cloudflare account needs access to Workers for Platforms.
 
 1. Install the package and dependencies:
 
@@ -82,23 +68,26 @@ Your Cloudflare account needs access to Workers for Platforms and D1.
 
    The `.env` file is already in `.gitignore` and will not be committed to git.
 
-  Then run the following commands to add these secrets to your Worker in production:
-
-  ```
-  npx wrangler@latest secret put CLOUDFLARE_API_TOKEN
-  ```
-
-  ```
-  npx wrangler@latest secret put CLOUDFLARE_ACCOUNT_ID
-  ```
-
-4. Create a D1 database and copy the ID into `wrangler.jsonc`. Make sure you update the `database_id` in wrangler.jsonc for your D1 binding afterwards:
+   Then run the following commands to add these secrets to your Worker in production:
 
    ```
-   npx wrangler d1 create workers-for-platforms-example-project
+   npx wrangler secret put CLOUDFLARE_API_TOKEN
    ```
 
-5. Create a namespace. Replace `$(ACCOUNT)`, `$(API_TOKEN)`, and `$(NAMESPACE)`:
+   ```
+   npx wrangler secret put CLOUDFLARE_ACCOUNT_ID
+   ```
+
+4. Create a KV namespace for Worker mappings:
+
+   ```
+   npx wrangler kv:namespace create "WORKER_MAPPINGS"
+   ```
+
+   Copy the namespace ID and preview ID into `wrangler.jsonc` under the `kv_namespaces` binding.
+
+5. Create a dispatch namespace:
+
    ```
    npx wrangler dispatch-namespace create workers-for-platforms-example-project
    ```
@@ -111,33 +100,7 @@ Your Cloudflare account needs access to Workers for Platforms and D1.
    ```
    npm run deploy
    ```
-   > Dev mode uses remote bindings to connect to your deployed D1 database and dispatch namespace. Take care you're not accidentally modifying production data!
 
-Once the Worker is live, visit [localhost:8787](http://localhost:8787/) in a browser and click the `Initialize` link. Have fun!
+Once the Worker is live, visit [localhost:8787](http://localhost:8787/) in a browser. You can create a new Worker via the "/upload" link. Access your Workers at `/user-workers/{name}`!
 
-For dev testing, here's a snippet to use in a NodeJS environment (like Chrome Dev Tools) to exercise the API:
-
-```javascript
-await (await fetch("http://localhost:8787/script/my-customer-script", {
-  "headers": {
-    "X-Customer-Token": "d4e5f6"
-  },
-  "method": "PUT",
-  "body": "...my-script-content..."
-})).text();
-```
-
-Or using curl:
-
-```
-curl -X PUT http://localhost:8787/script/my-customer-script -H 'X-Customer-Token: d4e5f6' -d '...my-script-content...'
-```
-
-## Troubleshooting
-
-- Use `npx wrangler tail` to capture logs.
-- Try a re-publish and wait a minute.
-
-## Example project roadmap
-
-- Showcase a Trace Worker and Workers Logpush to collect trace events for both the platform Worker and dispatched customer Workers.
+Then access it at: `http://localhost:8787/user-workers/my-worker`
