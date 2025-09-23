@@ -31,7 +31,7 @@ export function renderPage(body: string): string {
 }
 
 export const UploadPage = `
-<p><a href="/">← Back to Homepage</a></p>
+<p><a href="/"><- Back to Homepage</a></p>
 <h2>Create a User Worker</h2>
 <form id="workerForm">
     <div>
