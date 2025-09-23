@@ -2,6 +2,7 @@ import type { Env } from './env';
 import { renderPage, UploadPage, BuildTable } from './render';
 import Cloudflare from 'cloudflare';
 import { toFile } from 'cloudflare/index';
+import type { ScriptUpdateParams } from 'cloudflare/resources/workers-for-platforms/dispatch/namespaces/scripts/scripts';
 
 async function deployWorkerToNamespace(opts: {
   namespaceName: string;
@@ -9,11 +10,7 @@ async function deployWorkerToNamespace(opts: {
   code: string;
   accountId: string;
   apiToken: string;
-  bindings?: Array<
-    | { type: "plain_text"; name: string; text: string }
-    | { type: "kv_namespace"; name: string; namespace_id: string }
-    | { type: "r2_bucket"; name: string; bucket_name: string }
-  >;
+  bindings?: ScriptUpdateParams.Metadata['bindings'];
 }) {
   const { namespaceName, scriptName, code, accountId, apiToken, bindings = [] } = opts;
   const cf = new Cloudflare({ apiToken });
