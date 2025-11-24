@@ -1,4 +1,4 @@
-# Workers for Platforms Example Project
+# Workers for Platforms Project
 
 - [Blog post](https://blog.cloudflare.com/workers-for-platforms/)
 - [Docs](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms)
